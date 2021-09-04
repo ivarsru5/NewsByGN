@@ -65,6 +65,7 @@
 			isa = PBXGroup;
 			children = (
 				58D1DC4126DFEF6D0068CFA0 /* NewsByGNApp.swift */,
+				58D1DC6626E1498D0068CFA0 /* Requests.swift */,
 				58D1DC5026DFEFBF0068CFA0 /* TabView */,
 				58D1DC5326DFF4370068CFA0 /* HomeView */,
 				58D1DC5B26DFF5FB0068CFA0 /* News */,
@@ -95,9 +96,7 @@
 		58D1DC5326DFF4370068CFA0 /* HomeView */ = {
 			isa = PBXGroup;
 			children = (
-				58D1DC6326E143460068CFA0 /* Models */,
 				58D1DC5426DFF4450068CFA0 /* HomeView.swift */,
-				58D1DC6626E1498D0068CFA0 /* Requests.swift */,
 			);
 			path = HomeView;
 			sourceTree = "<group>";
@@ -113,8 +112,9 @@
 		58D1DC5B26DFF5FB0068CFA0 /* News */ = {
 			isa = PBXGroup;
 			children = (
-				58D1DC5C26DFF6230068CFA0 /* NewsView.swift */,
+				58D1DC6326E143460068CFA0 /* Models */,
 				58D1DC5E26DFFE760068CFA0 /* NewsCell.swift */,
+				58D1DC5C26DFF6230068CFA0 /* NewsView.swift */,
 			);
 			path = News;
 			sourceTree = "<group>";

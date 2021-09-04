@@ -8,26 +8,27 @@
 import SwiftUI
 
 struct NewsCell: View {
+    var headline: String
+    var description: String
+    
     var body: some View {
         HStack{
             
-            
-            
             VStack{
-                Text("Headline")
+                Text(headline)
                     .bold()
                 
-                Text("Subheadline")
+                Text(description)
                     .font(.subheadline)
             }
         }
-        .frame(height: /*@START_MENU_TOKEN@*/100/*@END_MENU_TOKEN@*/)
+        .frame(width: 300, height: 100, alignment: .center)
         .background(/*@START_MENU_TOKEN@*//*@PLACEHOLDER=View@*/Color.blue/*@END_MENU_TOKEN@*/)
     }
 }
 
 struct NewsCell_Previews: PreviewProvider {
     static var previews: some View {
-        NewsCell()
+        NewsCell(headline: "Tests", description: "TestDescription")
     }
 }

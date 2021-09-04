@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct NewsView: View {
+    @StateObject var request = Requests()
+    
     var body: some View {
         VStack{
             ZStack{
@@ -34,9 +36,14 @@ struct NewsView: View {
                 .padding(.top, 25)
                 
                 List{
-
+                    ForEach(request.articles, id: \.id){ article in
+                        NewsCell(headline: article.title, description: article.description)
+                    }
                 }
             }
+        }
+        .onAppear{
+            request.getNewsArticles(searchBy: nil)
         }
     }
 }
