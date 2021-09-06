@@ -15,14 +15,14 @@ class NetworkManager{
     
     func getNewsArticles(searchBy: String?, completion: @escaping(([Articles.Article]) -> Void)){
         var searchParameter: String
-        let urlString = "https://gnews.io/api/v4/"
+        let urlString = "https://gnews.io/api/v4/search?q="
         let token = "&token=3d36189e692ff476dc16efef4d466898"
         //I dont feal comfortable by placing token in sutch open, but i am doing it on tests purpose.
         
         if searchBy != nil{
             searchParameter = searchBy!
         }else{
-            searchParameter = "search?q=example"
+            searchParameter = "example"
         }
         
         guard let url = URL(string: urlString + searchParameter + token) else {
