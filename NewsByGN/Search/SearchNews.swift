@@ -15,76 +15,82 @@ enum CurrentView{
 struct SearchNews: View {
     @StateObject var searchManager = SearchManager()
     @State var currentView: CurrentView = .search
+    @State var dislayModalView = false
     
     var body: some View {
         NavigationView{
             ZStack{
-                Rectangle()
-                    .edgesIgnoringSafeArea(.all)
-                    .foregroundColor(Color(UIColor.systemGray6))
-                
-                VStack{
-                    ZStack{
-                        RoundedRectangle(cornerRadius: 20)
-                            .foregroundColor(Color(UIColor.systemBackground))
-                            .edgesIgnoringSafeArea(.top)
-                            .frame(height: 150)
-                            .shadow(radius: 10)
-                        
-                        VStack{
-                            Text("Logo")
-                                .bold()
-                                .font(.largeTitle)
-                                .foregroundColor(.orange)
+                ZStack{
+                    Rectangle()
+                        .edgesIgnoringSafeArea(.all)
+                        .foregroundColor(Color(UIColor.systemGray6))
+                    
+                    VStack{
+                        ZStack{
+                            RoundedRectangle(cornerRadius: 20)
+                                .foregroundColor(Color(UIColor.systemBackground))
+                                .edgesIgnoringSafeArea(.top)
+                                .frame(height: 150)
+                                .shadow(radius: 10)
                             
-                            HStack{
+                            VStack{
+                                Text("Logo")
+                                    .bold()
+                                    .font(.largeTitle)
+                                    .foregroundColor(.orange)
+                                
                                 HStack{
-                                    Image(systemName: "magnifyingglass")
+                                    HStack{
+                                        Image(systemName: "magnifyingglass")
+                                            .foregroundColor(Color.secondary)
+                                        TextField("Search", text: $searchManager.searchParameter) {(_) in } onCommit:{
+                                            self.searchManager.getNews(search: searchManager.searchParameter)
+                                            self.currentView = .news
+                                        }
                                         .foregroundColor(Color.secondary)
-                                    TextField("Search", text: $searchManager.searchParameter) {(_) in } onCommit:{
-                                        self.searchManager.getNews(search: searchManager.searchParameter)
-                                        self.currentView = .news
                                     }
-                                    .foregroundColor(Color.secondary)
+                                    .padding()
+                                    .background(RoundedRectangle(cornerRadius: 30)
+                                                    .foregroundColor(Color(UIColor.systemGray6)))
+                                    
+                                    
+                                    NavigationLink(destination: FilterSearch(), label: {
+                                        Circle()
+                                            .frame(width: 53, height: 53)
+                                            .foregroundColor(Color(UIColor.systemGray6))
+                                            .overlay(Image(systemName: "square.and.pencil")
+                                                        .foregroundColor(Color.secondary))
+                                    })
+                                    
+                                    Button(action: {
+                                        dislayModalView.toggle()
+                                    }, label: {
+                                        Circle()
+                                            .frame(width: 53, height: 53)
+                                            .foregroundColor(Color(UIColor.systemGray6))
+                                            .overlay(Image(systemName: "arrow.up.arrow.down")
+                                                        .foregroundColor(Color.secondary))
+                                    })
+                                    
                                 }
                                 .padding()
-                                .background(RoundedRectangle(cornerRadius: 30)
-                                                .foregroundColor(Color(UIColor.systemGray6)))
-                                
-                                
-                                NavigationLink(destination: EmptyView(), label: {
-                                    Circle()
-                                        .frame(width: 53, height: 53)
-                                        .foregroundColor(Color(UIColor.systemGray6))
-                                        .overlay(Image(systemName: "square.and.pencil")
-                                                    .foregroundColor(Color.secondary))
-                                })
-                                
-                                NavigationLink(destination: EmptyView(), label: {
-                                    Circle()
-                                        .frame(width: 53, height: 53)
-                                        .foregroundColor(Color(UIColor.systemGray6))
-                                        .overlay(Image(systemName: "arrow.up.arrow.down")
-                                                    .foregroundColor(Color.secondary))
-                                })
                             }
-                            .padding()
                         }
-                    }
-                    .padding(.bottom)
-                    
-                    Spacer()
-                    
-                    if currentView == .search{
-                        SearchHistoryView(searchManager: searchManager, currentView: $currentView)
-                    } else if currentView == .news{
-                        ScrollView{
-                            ForEach(searchManager.articles, id: \.id){ article in
-                                Link(destination: URL(string: article.newsUrl)!, label: {
-                                    NewsCell(article: article)
-                                        .padding(.init(top: 5, leading: 10, bottom: 5, trailing: 10))
-                                        .accentColor(Color(UIColor.label))
-                                })
+                        .padding(.bottom)
+                        
+                        Spacer()
+                        
+                        if currentView == .search{
+                            SearchHistoryView(searchManager: searchManager, currentView: $currentView)
+                        } else if currentView == .news{
+                            ScrollView{
+                                ForEach(searchManager.articles, id: \.id){ article in
+                                    Link(destination: URL(string: article.newsUrl)!, label: {
+                                        NewsCell(article: article)
+                                            .padding(.init(top: 5, leading: 10, bottom: 5, trailing: 10))
+                                            .accentColor(Color(UIColor.label))
+                                    })
+                                }
                             }
                         }
                     }
@@ -92,6 +98,37 @@ struct SearchNews: View {
                 .navigationTitle("")
                 .navigationBarHidden(true)
             }
+            HalfModalView(isShown: $dislayModalView, modalHeight: 400){
+                VStack{
+                    
+                }
+            }
+        }
+    }
+}
+
+struct SearchHistoryView: View{
+    @ObservedObject var searchManager: SearchManager
+    @Binding var currentScreen: CurrentView
+    
+    init(searchManager: SearchManager, currentView: Binding<CurrentView>){
+        self.searchManager = searchManager
+        self._currentScreen = currentView
+        UITableView.appearance().backgroundColor = UIColor.systemGray6
+    }
+    
+    var body: some View{
+        List{
+            Section(header: Text("Search History"), content: {
+                ForEach(searchManager.searchHistory, id:\.self){ parameter in
+                    Text(parameter)
+                        .onTapGesture {
+                            searchManager.searchParameter = parameter
+                            searchManager.getNews(search: parameter)
+                            currentScreen = .news
+                        }
+                }
+            })
         }
     }
 }
@@ -124,32 +161,6 @@ class SearchManager: ObservableObject{
                     }
                 }
             }
-        }
-    }
-}
-
-struct SearchHistoryView: View{
-    @ObservedObject var searchManager: SearchManager
-    @Binding var currentScreen: CurrentView
-    
-    init(searchManager: SearchManager, currentView: Binding<CurrentView>){
-        self.searchManager = searchManager
-        self._currentScreen = currentView
-        UITableView.appearance().backgroundColor = UIColor.systemGray6
-    }
-    
-    var body: some View{
-        List{
-            Section(header: Text("Search History"), content: {
-                ForEach(searchManager.searchHistory, id:\.self){ parameter in
-                    Text(parameter)
-                        .onTapGesture {
-                            searchManager.searchParameter = parameter
-                            searchManager.getNews(search: parameter)
-                            currentScreen = .news
-                    }
-                }
-            })
         }
     }
 }
