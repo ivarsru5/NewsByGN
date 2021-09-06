@@ -8,42 +8,53 @@
 import SwiftUI
 
 struct NewsView: View {
-    @StateObject var request = Requests()
+    @StateObject var provider = NewsProvider()
     
     var body: some View {
-        VStack{
-            ZStack{
-                RoundedRectangle(cornerRadius: 20)
-                    .foregroundColor(.white)
-                    .edgesIgnoringSafeArea(.top)
-                    .frame(height: 50)
-                    .shadow(radius: 10)
-                
-                Text("Logo")
-                    .bold()
-                    .font(.largeTitle)
-                    .foregroundColor(.orange)
-            }
-            .padding(.bottom)
+        ZStack{
+            Rectangle()
+                .edgesIgnoringSafeArea(.all)
+                .foregroundColor(Color(UIColor.systemGray6))
+            
             VStack{
-                HStack{
-                    Text("News")
-                        .bold()
-                        .padding(.leading, 15)
+                ZStack{
+                    RoundedRectangle(cornerRadius: 20)
+                        .foregroundColor(Color(UIColor.systemBackground))
+                        .edgesIgnoringSafeArea(.top)
+                        .frame(height: 50)
+                        .shadow(radius: 10)
                     
-                    Spacer()
+                    Text("Logo")
+                        .bold()
+                        .font(.largeTitle)
+                        .foregroundColor(.orange)
                 }
-                .padding(.top, 25)
-                
-                List{
-                    ForEach(request.articles, id: \.id){ article in
-                        NewsCell(headline: article.title, description: article.description)
+                .padding(.bottom)
+                VStack{
+                    HStack{
+                        Text("News")
+                            .bold()
+                            .padding(.leading, 15)
+                            .padding(.bottom, 15)
+                        
+                        Spacer()
+                    }
+                    .padding(.top, 25)
+                    
+                    ScrollView{
+                        ForEach(provider.articles, id: \.id){ article in
+                            Link(destination: URL(string: article.newsUrl)!, label: {
+                                NewsCell(article: article)
+                                    .padding(.init(top: 5, leading: 10, bottom: 5, trailing: 10))
+                                    .accentColor(Color(UIColor.label))
+                            })
+                        }
                     }
                 }
             }
         }
         .onAppear{
-            request.getNewsArticles(searchBy: nil)
+            provider.getNews()
         }
     }
 }
@@ -51,5 +62,18 @@ struct NewsView: View {
 struct NewsView_Previews: PreviewProvider {
     static var previews: some View {
         NewsView()
+    }
+}
+
+class NewsProvider: ObservableObject {
+    @Published var articles = [Articles.Article]()
+    @Published var image: Image? = nil
+    
+    func getNews(){
+        NetworkManager.shared.getNewsArticles(searchBy: nil) { newsArticles in
+            DispatchQueue.main.async {
+                self.articles = newsArticles
+            }
+        }
     }
 }

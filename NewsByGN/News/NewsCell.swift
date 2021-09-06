@@ -8,27 +8,60 @@
 import SwiftUI
 
 struct NewsCell: View {
-    var headline: String
-    var description: String
+    var article: Articles.Article
     
     var body: some View {
-        HStack{
+        ZStack{
+            Rectangle()
+                .foregroundColor(Color(UIColor.systemBackground))
             
-            VStack{
-                Text(headline)
-                    .bold()
+            HStack{
+                ArticleRemoteImage(urlString: article.image)
+                    .frame(width: 150)
                 
-                Text(description)
-                    .font(.subheadline)
+                VStack{
+                    Text(article.title)
+                        .bold()
+                        .multilineTextAlignment(.leading)
+                    
+                    Text(article.description)
+                        .font(.subheadline)
+                        .padding(.top, 10)
+                        .multilineTextAlignment(.leading)
+                }
             }
         }
-        .frame(width: 300, height: 100, alignment: .center)
-        .background(/*@START_MENU_TOKEN@*//*@PLACEHOLDER=View@*/Color.blue/*@END_MENU_TOKEN@*/)
+        .frame(width: 400, height: 130)
     }
 }
 
-struct NewsCell_Previews: PreviewProvider {
-    static var previews: some View {
-        NewsCell(headline: "Tests", description: "TestDescription")
+struct RemoteImage: View{
+    var image: Image?
+    
+    var body: some View{
+        image?.resizable() ?? Image(systemName: "photo").resizable()
+    }
+}
+
+struct ArticleRemoteImage: View{
+    @StateObject var imageLoader = ImageLoader()
+    let urlString: String
+    
+    var body: some View{
+        RemoteImage(image: imageLoader.image)
+            .onAppear{ imageLoader.loadImage(from: urlString) }
+    }
+}
+
+final class ImageLoader: ObservableObject{
+    @Published var image: Image? = nil
+    
+    func loadImage(from url: String){
+        NetworkManager.shared.downloadImages(fromURLString: url) { uiImage in
+            guard let image = uiImage else { return }
+            DispatchQueue.main.async {
+                self.image = Image(uiImage: image)
+            }
+        }
     }
 }

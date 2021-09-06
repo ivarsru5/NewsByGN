@@ -8,9 +8,6 @@
 import SwiftUI
 
 struct MainTabView: View {
-    init(){
-        UITabBar.appearance().barTintColor = UIColor.white
-    }
     
     var body: some View {
         TabView{
@@ -24,19 +21,19 @@ struct MainTabView: View {
                     Label("News", systemImage: "circle.grid.2x2")
                 }
             
-            HomeView()
+            SearchNews()
                 .tabItem {
-                    Label("Home", systemImage: "magnifyingglass")
+                    Label("Search", systemImage: "magnifyingglass")
                 }
             
             HomeView()
                 .tabItem {
-                    Label("Home", systemImage: "person")
+                    Label("Profile", systemImage: "person")
                 }
             
             HomeView()
                 .tabItem {
-                    Label("Home", systemImage: "ellipsis.circle.fill")
+                    Label("More", systemImage: "ellipsis.circle.fill")
                 }
         }
         .accentColor(.orange)

@@ -9,7 +9,23 @@ import SwiftUI
 
 struct SearchNews: View {
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        VStack{
+            ZStack{
+                RoundedRectangle(cornerRadius: 20)
+                    .foregroundColor(Color(UIColor.systemBackground))
+                    .edgesIgnoringSafeArea(.top)
+                    .frame(height: 100)
+                    .shadow(radius: 10)
+                
+                Text("Logo")
+                    .bold()
+                    .font(.largeTitle)
+                    .foregroundColor(.orange)
+            }
+            .padding(.bottom)
+            
+            Spacer()
+        }
     }
 }
 
