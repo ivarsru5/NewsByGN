@@ -134,9 +134,16 @@ struct FilterSearch: View {
                 
             }, label: {
                 ZStack{
+                    RoundedRectangle(cornerRadius: 30)
+                        .frame(width: 400, height: 50, alignment: .center)
+                        .foregroundColor(.orange)
                     
+                    Text("Apply filter")
+                        .bold()
+                        .foregroundColor(Color(UIColor.systemBackground))
                 }
             })
+            .padding(.bottom, 10)
         }
         .navigationTitle("")
         .navigationBarHidden(true)
