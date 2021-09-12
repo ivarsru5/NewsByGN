@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		58B3F57226EDDFBA007A0D38 /* SearchInView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58B3F57126EDDFBA007A0D38 /* SearchInView.swift */; };
 		58D1DC4226DFEF6D0068CFA0 /* NewsByGNApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58D1DC4126DFEF6D0068CFA0 /* NewsByGNApp.swift */; };
 		58D1DC4426DFEF6D0068CFA0 /* MainTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58D1DC4326DFEF6D0068CFA0 /* MainTabView.swift */; };
 		58D1DC4626DFEF6E0068CFA0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 58D1DC4526DFEF6E0068CFA0 /* Assets.xcassets */; };
@@ -23,6 +24,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		58B3F57126EDDFBA007A0D38 /* SearchInView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchInView.swift; sourceTree = "<group>"; };
 		58D1DC3E26DFEF6D0068CFA0 /* NewsByGN.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NewsByGN.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		58D1DC4126DFEF6D0068CFA0 /* NewsByGNApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewsByGNApp.swift; sourceTree = "<group>"; };
 		58D1DC4326DFEF6D0068CFA0 /* MainTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabView.swift; sourceTree = "<group>"; };
@@ -156,6 +158,7 @@
 			isa = PBXGroup;
 			children = (
 				58D1DC7226E66DA20068CFA0 /* FilterSearch.swift */,
+				58B3F57126EDDFBA007A0D38 /* SearchInView.swift */,
 			);
 			path = FilterOptions;
 			sourceTree = "<group>";
@@ -238,6 +241,7 @@
 				58D1DC5F26DFFE760068CFA0 /* NewsCell.swift in Sources */,
 				58D1DC7326E66DA20068CFA0 /* FilterSearch.swift in Sources */,
 				58D1DC7026E664080068CFA0 /* HalfModalView.swift in Sources */,
+				58B3F57226EDDFBA007A0D38 /* SearchInView.swift in Sources */,
 				58D1DC6D26E6633A0068CFA0 /* UserDefaultsExtension.swift in Sources */,
 				58D1DC4226DFEF6D0068CFA0 /* NewsByGNApp.swift in Sources */,
 			);

@@ -54,7 +54,7 @@ struct SearchNews: View {
                                                     .foregroundColor(Color(UIColor.systemGray6)))
                                     
                                     
-                                    NavigationLink(destination: FilterSearch(), label: {
+                                    NavigationLink(destination: FilterSearch(manager: searchManager), label: {
                                         Circle()
                                             .frame(width: 53, height: 53)
                                             .foregroundColor(Color(UIColor.systemGray6))
@@ -137,6 +137,11 @@ struct SearchHistoryView: View{
 class SearchManager: ObservableObject{
     @Published var articles = [Articles.Article]()
     @Published var searchParameter: String = ""
+    @Published var startDate: Date?
+    @Published var endDate: Date?
+    @Published var title = true
+    @Published var decription = true
+    @Published var content = true
     @Published var searchHistory: [String] = UserDefaults.standard.searchHistory{
         didSet{
             UserDefaults.standard.searchHistory = self.searchHistory
@@ -154,13 +159,70 @@ class SearchManager: ObservableObject{
                     }
                     
                     if UserDefaults.standard.searchHistory.count == 10{
-                        UserDefaults.standard.searchHistory.removeLast()
+                        UserDefaults.standard.searchHistory.removeFirst()
                         UserDefaults.standard.searchHistory.append(self.searchParameter)
                     }else{
                         UserDefaults.standard.searchHistory.append(self.searchParameter)
                     }
                 }
             }
+        }
+    }
+    
+    func filterNews(from articles: [Articles.Article], search parameter: String){
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssz"
+        
+        let searchedArticles = searchIn(from: articles,
+                                        title: self.title,
+                                        description: self.decription,
+                                        content: self.content,
+                                        search: parameter)
+        
+        self.articles = searchedArticles.compactMap({ article in
+            var comparedArticle: Articles.Article?
+            
+            guard let articleDate = formatter.date(from: article.publishedAt) else{
+                return nil
+            }
+            
+            if startDate != nil && endDate != nil{
+                if articleDate > startDate! && articleDate < endDate!{
+                    comparedArticle = article
+                }
+            }
+            return comparedArticle
+        })
+    }
+    
+    func searchIn(from atricles: [Articles.Article] ,title: Bool, description: Bool, content: Bool, search parameter: String) -> [Articles.Article]{
+        var filteredArticles = [Articles.Article]()
+        
+        for searchArticle in articles{
+            
+            if title{
+                if seperateString(articleString: searchArticle.title, search: parameter){
+                    filteredArticles.append(searchArticle)
+                }
+            }else if description{
+                if seperateString(articleString: searchArticle.description, search: parameter){
+                    filteredArticles.append(searchArticle)
+                }
+            }else if content{
+                if seperateString(articleString: searchArticle.content, search: parameter){
+                    filteredArticles.append(searchArticle)
+                }
+            }
+        }
+        return filteredArticles
+    }
+    
+    func seperateString(articleString: String, search paramater: String) -> Bool{
+        let array = articleString.components(separatedBy: " ")
+        if array.contains(paramater){
+            return true
+        }else{
+            return false
         }
     }
 }
