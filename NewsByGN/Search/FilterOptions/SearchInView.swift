@@ -14,23 +14,26 @@ struct SearchInView: View {
     @Binding var description: Bool
     @Binding var content: Bool
     
+    var disableButton: Bool{
+        if !title && !description && !content{
+            return true
+        }else{
+            return false
+        }
+    }
+    
     var body: some View {
         VStack{
             HStack{
                 
-                if !title && !description && !content{
+                Button(action: {
+                    presentation.wrappedValue.dismiss()
+                }, label: {
                     Image(systemName: "chevron.backward")
-                        .foregroundColor(.gray)
+                        .foregroundColor(.orange)
                         .font(.custom("SF Sybols", size: 25))
-                }else{
-                    Button(action: {
-                        presentation.wrappedValue.dismiss()
-                    }, label: {
-                        Image(systemName: "chevron.backward")
-                            .foregroundColor(.orange)
-                            .font(.custom("SF Sybols", size: 25))
-                    })
-                }
+                })
+                .disabled(disableButton)
                 
                 Spacer()
                 

@@ -15,7 +15,7 @@ enum CurrentView{
 struct SearchNews: View {
     @StateObject var searchManager = SearchManager()
     @State var currentView: CurrentView = .search
-    @State var dislayModalView = false
+    @State var sortNews = false
     
     var body: some View {
         NavigationView{
@@ -63,7 +63,7 @@ struct SearchNews: View {
                                     })
                                     
                                     Button(action: {
-                                        dislayModalView.toggle()
+                                        sortNews.toggle()
                                     }, label: {
                                         Circle()
                                             .frame(width: 53, height: 53)
@@ -98,11 +98,17 @@ struct SearchNews: View {
                 .navigationTitle("")
                 .navigationBarHidden(true)
             }
-            HalfModalView(isShown: $dislayModalView, modalHeight: 400){
-                VStack{
-                    
-                }
-            }
+            .actionSheet(isPresented: $sortNews, content: {
+                ActionSheet(title: Text("Sort by"), message: Text("Please select sort option."), buttons: [
+                    .default(Text("Upload date"), action: {
+                        searchManager.sortNews(from: searchManager.articles)
+                    }),
+                    .default(Text("Relevance"), action: {
+                        
+                    }),
+                    .cancel()
+                ])
+            })
         }
     }
 }
@@ -193,6 +199,16 @@ class SearchManager: ObservableObject{
             }
             return comparedArticle
         })
+    }
+    
+    func sortNews(from articles: [Articles.Article]){
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssz"
+        
+        self.articles = articles
+            .map { return ($0, formatter.date(from: $0.publishedAt)!) }
+            .sorted { $0.1 > $1.1 }
+            .map( \.0)
     }
     
     func searchIn(from atricles: [Articles.Article] ,title: Bool, description: Bool, content: Bool, search parameter: String) -> [Articles.Article]{
